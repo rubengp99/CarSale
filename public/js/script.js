@@ -503,7 +503,7 @@ $(document).ready(function($){
       var promise = $.ajax({
         cache:false,
         type:'POST',
-        url:"'/auth/login'",
+        url:"/auth/login",
         dataType: 'json',
         data:{password:password, email:email},
       });
