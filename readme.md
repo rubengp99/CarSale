@@ -1,6 +1,6 @@
 # Car Sale
 
-This is a car dealership demo page made with the object of improving my skills as a developer. At this moment is under development
+This is a car dealership demo page made with the object of improving my skills as a developer. At this moment is under development so the demo page will be available on heroku soon.
 
 ## Preview of the page.
 
