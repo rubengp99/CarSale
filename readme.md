@@ -10,8 +10,6 @@ This is a preview of the landing page, you can read about the "company" or start
 
 ![about](/public/storage/sobre.png)
 
-![end](/public/storage/end.png)
-
 ## Auth, Register & Publish modals.
 
 I've customized the default auth of laravel and implemented mine as a modals in order to reduce the number of screens and make it more comfortable at the moment of requering this actions.
