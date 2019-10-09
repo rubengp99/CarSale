@@ -356,6 +356,11 @@ $(document).ready(function($){
 
 
   $("#Register").on('transitionend webkitTransitionEnd oTransitionEnd', function (e) {
+
+    var User = document.getElementById('User');
+    var Mail = document.getElementById('Mail');
+    var Fname = document.getElementById('Fname');
+    var Pass = document.getElementById('Pass');
     $.ajaxSetup({
 
       headers: {

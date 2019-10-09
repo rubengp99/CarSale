@@ -228,7 +228,7 @@ canvas#spiders {
 }
 
 .section{
-  height: 500px;
+  height: max-content;
   margin: 7vh 15vh 5vh 15vh;
   text-align: center;
 }
