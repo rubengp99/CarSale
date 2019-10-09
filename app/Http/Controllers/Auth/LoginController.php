@@ -47,34 +47,29 @@ class LoginController extends Controller
      * @return mixed
      */
     
-    protected function authenticated(Request $request, $user)
-    {
-        if ($request->ajax()){
+    /*
 
-            if(Auth::check()){
-                return response()->json([
-                    'auth' => auth()->check(),
-                    'user' => $user,
-                    'intended' => $this->redirectPath(),
-                ],200);
-            }else{
-                return response()->json([
-                    'auth' => auth()->check(),
-                    'user' => $user,
-                    'intended' => $this->redirectPath(),
-                ],407);
-            }
-        }
-            
-    }
-
-/*
     public function login(Request $request){
-        $email = $request->input('mail');
-        $password = $request->input('pass');
-        if (Auth::attempt(array('email' => $email, 'password' => $password))){
-            return 'success';
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
         }
-            return 'failed';
+
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
     }*/
 }

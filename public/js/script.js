@@ -78,6 +78,7 @@ $(".mat-input").focusout(function(){
 });
 
 $("#modal_sell").click(function() {
+  alert("abrido");
   if($("#login").hasClass("finished")){
     $("#login").removeClass("finished");
     $("#login").css("background-color","")
@@ -365,7 +366,6 @@ $(document).ready(function($){
     
     });
     if(User.checkValidity()== true && Pass.checkValidity()==true && Mail.checkValidity()==true && Fname.checkValidity()==true){
-      
       e.preventDefault();
 
       var name = $("input[name=name]").val();
@@ -379,7 +379,7 @@ $(document).ready(function($){
       var promise = $.ajax({
         cache:false,
         type:'POST',
-        url:'/',
+        url:'/signup',
         dataType: 'json',
         data:{name:name, username:username, password:password, email:email },
       });
@@ -404,7 +404,7 @@ $(document).ready(function($){
           $("#Register").removeClass("active");
             $("#Register").toggleClass("finished");
             $("#Register").parent().find(".check").html("<i class='material-icons'>check</i>");
-            $(this).css("background-color","#2ecc71")
+            $(this).css("background-color","#2ecc71");
             Swal.fire({
               type:'success',
               title:'Almost done!',
@@ -417,31 +417,14 @@ $(document).ready(function($){
               showCancelButton: true,
             }).then((result) => {
             if (result.value) {
-              Swal.fire({
-                type: 'success',
-                title: 'All done!',
-                html:"Okay! I'll take you there in <strong></strong> seconds.",
-                confirmButtonText:'<i class="material-icons" style="vertical-align:middle;">thumb_up</i>',               
-                timer: 2500,
-                onBeforeOpen: () => {
-                  Swal.showLoading()
-                  timerInterval = setInterval(() => {
-                    Swal.getContent().querySelector('strong')
-                      .textContent = Swal.getTimerLeft()
-                  }, 100)
-                },
-                onClose: () => {
-                    $('#register').removeClass("zoom");
-                    $('#register').addClass("zoom-out");
-                    setTimeout(function(){ 
-                      $('#register').attr('class', 'modal');
-                      $('#register').addClass("hidden");
-                      $('#Login').removeClass("hidden");
-                      $('#Login').addClass("zoom");
-                    }, 600);
-                    clearInterval(timerInterval);
-                  }
-               })
+              $('#register').removeClass("zoom");
+              $('#register').addClass("zoom-out");
+              setTimeout(function(){ 
+                $('#register').attr('class', 'modal');
+                $('#register').addClass("hidden");
+                $('#Login').removeClass("hidden");
+                $('#Login').addClass("zoom");
+              }, 600);
             }else if(result.dismiss){
               Swal.fire({
                 type: 'error',
@@ -479,11 +462,27 @@ $(document).ready(function($){
         }
         
      }
+
   });
 
 
 
   $("#login").on('transitionend webkitTransitionEnd oTransitionEnd', function (e) {
+    /*
+    e.preventDefault();
+
+    $.ajax({   
+        method: "POST",
+        dataType: "json",
+        headers: { 
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        data: $("form.login").serialize(),
+        url: "/login"
+    })
+    .done(function(data) {
+        console.log(data);
+    }); */
     $.ajaxSetup({
 
       headers: {
@@ -503,31 +502,67 @@ $(document).ready(function($){
       var promise = $.ajax({
         cache:false,
         type:'POST',
-        url:"/auth/login",
+        url:"/login",
         dataType: 'json',
         data:{password:password, email:email},
+
       });
-      
+
       promise.always(function(data){
-        if (data.status != 407){
+        if(data.status==200){
           Swal.fire({
-            title:'Something went wrong.',
-            text:'Looks like there is an invalid field, please check the fields marked with the red color.',
+            title:"¡Welcome!",
+            text:'Your credentials have been confirmed.',
             type:'success',
             confirmButtonText:
             '<i class="material-icons" style="vertical-align:middle;">thumb_up</i>'
-            });
-      } else {
+          }).then((result) => {
+            if(result.value){
+              location.reload();
+            }
+        });
+          $("#login").removeClass("active");
+          $("#login").toggleClass("finished");
+          $("#login").parent().find(".check").html("<i class='material-icons'>check</i>");
+          $('#login').css("background-color","#2ecc71");
+        }else{
+          Swal.fire({
+            title:"Something went wrong.",
+            text:"These credentials do not match our records. Please try again or Sign up instead.",
+            type:'error',
+            confirmButtonText:
+            '<strong>Try Again</strong>',
+            cancelButtonText:'<strong>Sign Up</strong>',
+              cancelButtonColor: '#d32f2f',
+              showCancelButton: true
+          }).then((result) => {
+              if(result.dismiss){
+                $('#Login').removeClass("zoom");
+                $('#Login').addClass("zoom-out");
+                setTimeout(function(){ 
+                  $('#Login').attr('class', 'modal');
+                  $('#Login').addClass("hidden");
+                  $('#register').removeClass("hidden");
+                  $('#register').addClass("zoom");
+                }, 600);
+              }
+          });
+          $("#login").removeClass("active");
+          $("#login").toggleClass("finished");
+          $("#login").parent().find(".check").html("<i class='material-icons'>priority_high</i>");
+          $("#login").css("background-color","#d32f2f");
+
+        }
+      })
+
+        /*
         Swal.fire({
           title:'Something went wrong.',
           text:'Looks like there is an invalid field, please check the fields marked with the red color.',
           type:'error',
           confirmButtonText:
           '<i class="material-icons" style="vertical-align:middle;">thumb_up</i>'
-          });
-      }
-      });
-
+          });*/
   });
 
   /*

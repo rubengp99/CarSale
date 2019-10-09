@@ -25,13 +25,13 @@
                     </div>
 
                     <br>
-                    <button id="login" class="button" style=" width:100px;">
-                        <span class="submit">Sign in</span>
-                        <span class="loading"><i class="material-icons">refresh</i></span>
-                        <span class="check"><i class="material-icons">check</i></span>
-                    </button> 
+                    
                 </form>
-                
+                <button id="login" class="button" style=" width:100px;">
+                  <span class="submit">Sign in</span>
+                  <span class="loading"><i class="material-icons">refresh</i></span>
+                  <span class="check"><i class="material-icons">check</i></span>
+                </button> 
                 <br>          
             </div>    
             <div class="card-help">
@@ -53,7 +53,7 @@
             </div>
               <div class="card" >
                     <div class="card-content">
-                      <form  method="POST" action="/">
+                      <form  method="POST" action="/signup">
                         {{ csrf_field() }}
                         <div class="mat-div">
                           <i class="material-icons">person</i>

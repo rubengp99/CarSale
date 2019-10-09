@@ -37,7 +37,11 @@
     @yield('filters')
     <main>
         <aside class="col">
-            @yield('sidebar')
+            @if (!Auth::guest())
+                @yield('logged-sidebar')
+            @else
+                @yield('sidebar')
+            @endif
         </aside>
         <div class="content"  id="products">
             <div class="twit-container">
@@ -420,6 +424,8 @@
     @yield('modal-login')
 
     @yield('modal-register')
+
+    @yield('modal-sell');
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js"></script>

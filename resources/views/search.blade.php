@@ -61,7 +61,11 @@
     <main>
         <aside class="col"> 
 
-            @yield('sidebar') 
+          @if (!Auth::guest())
+              @yield('logged-sidebar')
+          @else
+              @yield('sidebar')
+          @endif 
 
         </aside>
         
@@ -171,6 +175,7 @@
 
     @yield('modal-register')
 
+    @yield('modal-sell');
     <!-- End modals section -->
 
 

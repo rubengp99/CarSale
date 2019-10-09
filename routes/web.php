@@ -23,7 +23,7 @@ Route::get('/test', function () {
 
 Route::get('/search/{filter}','search@find');
 
-Route::post('/',"UsersController@store");
+Route::post('/signup',"UsersController@store");
 
 Route::get('/logout',function(){
     Auth::logout();
