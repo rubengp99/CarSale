@@ -63,8 +63,6 @@ jobs:
           commitish: master
           tag_name: ${{ env.new_tag }}
           previous_tag_name: ${{ env.latest_tag }}
-          headers: |
-            Authorization: token ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
