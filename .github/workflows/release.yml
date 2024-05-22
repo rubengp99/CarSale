@@ -74,7 +74,7 @@ jobs:
           echo "${{ steps.get-commits.outputs.stdout }}" >> release_body.txt
           echo "" >> release_body.txt
           echo "**Full Changelog**: https://github.com/your_username/your_repo/compare/${{ env.latest_tag }}...${{ env.new_tag }}" >> release_body.txt
-          echo "::set-output name=release_body::$(cat release_body.txt)"
+          cat release_body.txt
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -82,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.new_tag }}
-          release_name: ${{ env.new_tag }}
+          release_name: Release ${{ env.new_tag }}
           body: ${{ steps.generate-release-body.outputs.release_body }}
           draft: false
           prerelease: false
