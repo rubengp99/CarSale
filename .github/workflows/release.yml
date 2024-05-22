@@ -60,12 +60,21 @@ jobs:
         run: |
           latest_tag=${{ env.latest_tag }}
           if [ "$latest_tag" == "v0.0.0" ]; then
-            git log --pretty=format:"%h %s" --reverse
+            git log --pretty=format:"* %s" --reverse
           else
-            git log --pretty=format:"%h %s" $latest_tag..HEAD
+            git log --pretty=format:"* %s" $latest_tag..HEAD --reverse
           fi
         env:
           LATEST_TAG: ${{ env.latest_tag }}
+
+      - name: Generate release body
+        id: generate-release-body
+        run: |
+          echo "## What's Changed" > release_body.txt
+          echo "${{ steps.get-commits.outputs.stdout }}" >> release_body.txt
+          echo "" >> release_body.txt
+          echo "**Full Changelog**: https://github.com/your_username/your_repo/compare/${{ env.latest_tag }}...${{ env.new_tag }}" >> release_body.txt
+          echo "::set-output name=release_body::$(cat release_body.txt)"
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -73,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.new_tag }}
-          release_name: Release ${{ env.new_tag }}
-          body: ${{ steps.get-commits.outputs.stdout }}
+          release_name: ${{ env.new_tag }}
+          body: ${{ steps.generate-release-body.outputs.release_body }}
           draft: false
           prerelease: false
