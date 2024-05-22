@@ -55,19 +55,16 @@ jobs:
           git tag $new_tag
           git push origin $new_tag
 
-      - name: Generate Release Notes
-        id: generate-release-notes
-        run: |
-          latest_tag=${{ env.latest_tag }}
-          new_tag=${{ env.new_tag }}
-          release_notes=""
-          while IFS= read -r line; do
-            commit_hash=$(echo "$line" | cut -d' ' -f1)
-            commit_message=$(echo "$line" | cut -d' ' -f2-)
-            author=$(git show -s --format='%an' $commit_hash)
-            release_notes+="* [$commit_message](https://github.com/$GITHUB_REPOSITORY/commit/$commit_hash) - $author\n"
-          done < <(git log --pretty=format:"%h %s" $latest_tag..$new_tag)
-          echo "release_notes=$release_notes" >> $GITHUB_ENV
+      - name: Get Release Notes
+        id: get-release-notes
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/${{ github.repository }}/releases/notes
+          commitish: master
+          tag_name: ${{ env.new_tag }}
+          previous_tag_name: ${{ env.latest_tag }}
+          headers: |
+            Authorization: token ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
@@ -76,8 +73,6 @@ jobs:
         with:
           tag_name: ${{ env.new_tag }}
           release_name: ${{ env.new_tag }}
-          body: |
-            Release notes for ${{ env.new_tag }}:
-            ${{ env.release_notes }}
+          body: ${{ steps.get-release-notes.outputs.data.body }}
           draft: false
           prerelease: false
