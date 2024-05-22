@@ -40,5 +40,5 @@ This section includes a sub section for sorting by filters. I decided to use Iso
 
 This project is incomplete, i'll be adding more features soon to improve my skills as a developer and the project itself. Hope you like it!.
 
-Coded with :heart: by [Rubén García](https://rubengarcia.herokuapp.com/)
+Coded with :heart: by [Rubén García](https://rubengarcia.herokuapp.com/) 
 
