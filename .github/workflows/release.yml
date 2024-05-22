@@ -67,36 +67,19 @@ jobs:
         env:
           LATEST_TAG: ${{ env.latest_tag }}
 
-      - name: Get release notes
-        id: release-notes
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data: { html_url: compareUrl } } = await github.repos.getCompareCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              base: '${{ env.latest_tag }}',
-              head: '${{ env.new_tag }}'
-            });
-            core.setOutput('compareUrl', compareUrl);
-            const { data: { body: releaseNotes } } = await github.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: '${{ env.new_tag }}',
-              name: 'Release ${{ env.new_tag }}',
-              body: '## What\'s Changed\n${{ steps.get-commits.outputs.stdout }}\n\n**Full Changelog**: ${compareUrl}'
-            });
-            core.setOutput('releaseNotes', releaseNotes);
+      - name: Generate release body
+        id: generate-release-body
+        run: |
+          release_body="## What's Changed\n${{ steps.get-commits.outputs.stdout }}\n\n**Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ env.latest_tag }}...${{ env.new_tag }}"
+          echo "::set-output name=release_body::$release_body"
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
-        if: steps.release-notes.outputs.releaseNotes != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.new_tag }}
           release_name: ${{ env.new_tag }}
-          body: ${{ steps.release-notes.outputs.releaseNotes }}
+          body: ${{ steps.generate-release-body.outputs.release_body }}
           draft: false
           prerelease: false
