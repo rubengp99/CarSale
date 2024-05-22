@@ -60,7 +60,13 @@ jobs:
         run: |
           latest_tag=${{ env.latest_tag }}
           new_tag=${{ env.new_tag }}
-          release_notes=$(git log --pretty=format:"* %s" $latest_tag..$new_tag)
+          release_notes=""
+          while IFS= read -r line; do
+            commit_hash=$(echo "$line" | cut -d' ' -f1)
+            commit_message=$(echo "$line" | cut -d' ' -f2-)
+            author=$(git show -s --format='%an' $commit_hash)
+            release_notes+="* [$commit_message](https://github.com/$GITHUB_REPOSITORY/commit/$commit_hash) - $author\n"
+          done < <(git log --pretty=format:"%h %s" $latest_tag..$new_tag)
           echo "release_notes=$release_notes" >> $GITHUB_ENV
 
       - name: Create GitHub Release
