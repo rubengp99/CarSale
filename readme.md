@@ -6,7 +6,7 @@ This is a car dealership demo page made with the object of improving my skills a
 
 ## Preview of the page.
 
-This is a preview of the landing page, you can read about the "company" or start looking for a car instead.
+This is a preview of the landing page, you can read about the "company" or start looking for a car instead. 
 
 ![Preview](/public/storage/index.png)
 
