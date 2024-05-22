@@ -67,22 +67,36 @@ jobs:
         env:
           LATEST_TAG: ${{ env.latest_tag }}
 
-      - name: Generate release body
-        id: generate-release-body
-        run: |
-          echo "## What's Changed" > release_body.txt
-          echo "${{ steps.get-commits.outputs.stdout }}" >> release_body.txt
-          echo "" >> release_body.txt
-          echo "**Full Changelog**: https://github.com/your_username/your_repo/compare/${{ env.latest_tag }}...${{ env.new_tag }}" >> release_body.txt
-          cat release_body.txt
+      - name: Get release notes
+        id: release-notes
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: { html_url: compareUrl } } = await github.repos.getCompareCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              base: '${{ env.latest_tag }}',
+              head: '${{ env.new_tag }}'
+            });
+            core.setOutput('compareUrl', compareUrl);
+            const { data: { body: releaseNotes } } = await github.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ env.new_tag }}',
+              name: 'Release ${{ env.new_tag }}',
+              body: '## What\'s Changed\n${{ steps.get-commits.outputs.stdout }}\n\n**Full Changelog**: ${compareUrl}'
+            });
+            core.setOutput('releaseNotes', releaseNotes);
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
+        if: steps.release-notes.outputs.releaseNotes != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.new_tag }}
-          release_name: Release ${{ env.new_tag }}
-          body: ${{ steps.generate-release-body.outputs.release_body }}
+          release_name: ${{ env.new_tag }}
+          body: ${{ steps.release-notes.outputs.releaseNotes }}
           draft: false
           prerelease: false
