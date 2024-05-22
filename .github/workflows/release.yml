@@ -55,12 +55,11 @@ jobs:
           git tag $new_tag
           git push origin $new_tag
 
-      - name: Get Release Notes
-        id: get-release-notes
+      - name: Generate Release Notes
+        id: generate-release-notes
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/${{ github.repository }}/releases/notes
-          commitish: master
+          route: POST /repos/${{ github.repository }}/releases/generate-notes
           tag_name: ${{ env.new_tag }}
           previous_tag_name: ${{ env.latest_tag }}
         env:
@@ -73,6 +72,6 @@ jobs:
         with:
           tag_name: ${{ env.new_tag }}
           release_name: ${{ env.new_tag }}
-          body: ${{ steps.get-release-notes.outputs.data.body }}
+          body: ${{ steps.generate-release-notes.outputs.data.body }}
           draft: false
           prerelease: false
