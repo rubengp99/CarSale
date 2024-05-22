@@ -19,7 +19,7 @@ jobs:
       - name: Get latest tag
         id: get-latest-tag
         run: |
-          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "")
           if [ -z "$latest_tag" ]; then
             echo "::set-output name=latest_tag::v0.0.0"
           else
