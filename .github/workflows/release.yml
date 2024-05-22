@@ -55,29 +55,23 @@ jobs:
           git tag $new_tag
           git push origin $new_tag
 
-      - name: Get generate release notes
+      - name: Generate Release Notes
         id: generate-release-notes
-        uses: actions/github-script@v5
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { data: { body: releaseNotes } } = await github.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: '${{ env.new_tag }}',
-              name: 'Release ${{ env.new_tag }}',
-              draft: true // Draft mode to prevent publishing before the release notes are generated
-            });
-            core.setOutput('releaseNotes', releaseNotes);
+        run: |
+          latest_tag=${{ env.latest_tag }}
+          new_tag=${{ env.new_tag }}
+          release_notes=$(git log --pretty=format:"* %s" $latest_tag..$new_tag)
+          echo "release_notes=$release_notes" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
-        if: steps.generate-release-notes.outputs.releaseNotes != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.new_tag }}
           release_name: ${{ env.new_tag }}
-          body: ${{ steps.generate-release-notes.outputs.releaseNotes }}
+          body: |
+            Release notes for ${{ env.new_tag }}:
+            ${{ env.release_notes }}
           draft: false
           prerelease: false
