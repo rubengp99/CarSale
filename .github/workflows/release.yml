@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.calculate-new-tag.outputs.new_tag }}
-          release_name: ${{ steps.calculate-new-tag.outputs.new_tag }}
+          release_name: Release ${{ steps.calculate-new-tag.outputs.new_tag }}
           body: |
             Release notes for ${{ steps.calculate-new-tag.outputs.new_tag }}
           draft: false
